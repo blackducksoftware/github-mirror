@@ -1,23 +1,7 @@
 require 'test_helper'
+include FactoryGirl::Syntax::Methods
 
-describe 'GhtRetrieveRepo' do
-  it 'test_it_does_something_useful' do
-    assert true # this will result in a failure
-  end 
-
-  it 'test_load_ght_retrieve_repo' do
-    ght = GHTRetrieveRepo.new
-    err = ->{ ght.go() }.must_raise RuntimeError
-    err.message.must_match /Unimplemented/
-  end
-    
-  it 'test_load_ghtorrent.new()' do
-    ght = GHTRetrieveRepo.new
-    err = -> { ght.validate }.must_raise RuntimeError
-    err.message.must_match /Unimplemented/
-  end
-end
-
+class GhtorrentTest < Minitest::Test
 describe 'ghtorrent::mirror module' do
   before do
     session = 1
@@ -117,13 +101,14 @@ describe 'ghtorrent::mirror module' do
    end
 
    it 'should return a user given a bad email and user' do
-    email = 'matthew~1@gmail.com'
-    returned_user = @ght.ensure_user_byemail(email, 'msk999')
+    fake_email = 'matthew~1@gmail.com'
+    returned_user = @ght.ensure_user_byemail(fake_email, 'msk999')
     assert returned_user
-    assert returned_user.email == email && returned_user.name = 'msk999'
-
+    assert returned_user[:email] == fake_email 
+    assert returned_user[:name] == 'msk999'
+  
     users = @ght.db[:users]
-    usr = users.where(:email => email).delete if returned_user
+    users.where(:email => fake_email).delete 
    end
 
    it 'should return a repo given a user and repo' do
@@ -175,6 +160,23 @@ describe 'ghtorrent::mirror module' do
      assert commit[:project_id] == project_id
    end
 
+  it ' calls ensure_commits method' do
+    users = @ght.db[:users]
+    user = users.where(:login => 'msk999').first
+    project_id = @ght.db[:projects].where(:owner_id => user[:id]).first[:id]
+    sha = @ght.db[:commits].where(:project_id => project_id).first[:sha]
+    
+    commit = @ght.ensure_commits('msk999', 'Subscribem', sha: sha, return_retrieved: true, fork_all: true)
+    assert commit[0][:sha] == sha
+  end
+
+   it ' should use faker' do
+    byebug
+      user = create(:user, db_obj: @ght.db) 
+
+    assert user
+   end
+
    it 'tries to store an invalid commit - need to put this one into transaction' do
     users = @ght.db[:users]
     user = users.where(:login => 'msk999').first
@@ -192,7 +194,7 @@ describe 'ghtorrent::mirror module' do
    it 'calls ensure_user_follower method' do
     retval = @ght.ensure_user_follower('msk999', 'msk999')
    end
-
+  end
 
   # it 'should run if arguments are given' do
   #   ARGV[0] = 'msk999'
