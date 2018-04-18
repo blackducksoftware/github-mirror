@@ -170,13 +170,19 @@ describe 'ghtorrent::mirror module' do
     assert commit[0][:sha] == sha
   end
 
-   it ' should use faker' do
-    byebug
+   it 'should create persist a fake user' do
       user = create(:user, db_obj: @ght.db) 
-
-    assert user
+      assert user
+      saved_user = @ght.db[:users].where(id: user.id).first
+      saved_user[:name].must_equal user.name 
    end
 
+   it 'should not persist a fake user' do
+      user = create(:user) 
+      assert user
+      @ght.db[:users].where(login: user.login).count.must_equal 0
+   end
+   
    it 'tries to store an invalid commit - need to put this one into transaction' do
     users = @ght.db[:users]
     user = users.where(:login => 'msk999').first
