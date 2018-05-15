@@ -20,3 +20,7 @@ require 'byebug'
 require 'helpers/shared'
 
 FactoryGirl.find_definitions
+include FactoryGirl::Syntax::Methods
+
+
+
