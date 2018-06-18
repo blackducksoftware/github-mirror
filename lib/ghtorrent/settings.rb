@@ -51,15 +51,16 @@ module GHTorrent
         :amqp_prefetch  => 1,
 
         # :sql_url => 'sqlite://github.db',
-        :sql_url => 'mysql2://ghtorrent:ghtorrent@localhost/ghtorrent',
+        # :sql_url => 'mysql2://ghtorrent:ghtorrent@localhost/ghtorrent',
+        :sql_url => "postgres://ght_admin:oh-Postgres!8@ght-db01.eastus.cloudapp.azure.com:5432/ghtorrent_test", 
 
         :mirror_urlbase => 'https://api.github.com/',
-        :mirror_persister => 'noop',
+        :mirror_persister => 'noop',  #'noop',
         :mirror_history_pages_back => 10,
         :user_agent => 'ghtorrent',
         :store_pull_request_commits => 'false',
 
-        :github_token => 'place your github token here',
+        :github_token => '8978521a8430c9bdaf30f9e97b79a017ab5de584',
 
         :attach_ip => '0.0.0.0',
 
@@ -74,7 +75,9 @@ module GHTorrent
 
         :geolocation_service => 'osm',
         :geolocation_wait => '2',
-        :geolocation_bing_key => ''
+        :geolocation_bing_key => '',
+
+        :csv_file => 'lib/ghtorrent/csv_persist.csv'
     }
 
     def config(key, use_default = true)
