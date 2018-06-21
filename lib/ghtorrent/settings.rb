@@ -58,7 +58,7 @@ module GHTorrent
         :user_agent => 'ghtorrent',
         :store_pull_request_commits => 'false',
 
-        :github_token => '',
+        :github_token => 'place your github token here',
 
         :attach_ip => '0.0.0.0',
 
