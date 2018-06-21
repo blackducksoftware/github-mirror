@@ -53,7 +53,7 @@ module GHTorrent
         :sql_url => 'sqlite://github.db',
         # :sql_url => 'mysql2://ghtorrent:ghtorrent@localhost/ghtorrent',
         :mirror_urlbase => 'https://api.github.com/',
-        :mirror_persister => 'noop',  #'noop',
+        :mirror_persister => 'noop',
         :mirror_history_pages_back => 10,
         :user_agent => 'ghtorrent',
         :store_pull_request_commits => 'false',
@@ -73,9 +73,7 @@ module GHTorrent
 
         :geolocation_service => 'osm',
         :geolocation_wait => '2',
-        :geolocation_bing_key => '',
-
-        :csv_file => 'lib/ghtorrent/csv_persist.csv'
+        :geolocation_bing_key => ''
     }
 
     def config(key, use_default = true)
