@@ -1,7 +1,7 @@
 require 'yaml'
 require 'tmpdir'
 
-require 'ghtorrent/utils'
+require_relative 'utils'
 
 module GHTorrent
   module Settings

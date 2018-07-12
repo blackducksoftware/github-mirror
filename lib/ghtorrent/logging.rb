@@ -1,6 +1,6 @@
 require 'logger'
 
-require 'ghtorrent/settings'
+require_relative 'settings'
 
 module GHTorrent
   module Logging

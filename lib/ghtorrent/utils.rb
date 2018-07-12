@@ -1,4 +1,4 @@
-require 'ghtorrent/hash'
+require_relative 'hash'
 
 module GHTorrent
   module Utils

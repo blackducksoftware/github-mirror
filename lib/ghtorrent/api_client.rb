@@ -4,10 +4,10 @@ require 'digest/sha1'
 require 'fileutils'
 require 'json'
 
-require 'ghtorrent/logging'
-require 'ghtorrent/settings'
-require 'ghtorrent/ghtime'
-require 'version'
+require_relative 'logging'
+require_relative 'settings'
+require_relative 'ghtime'
+require_relative '../version'
 
 module GHTorrent
   module APIClient
