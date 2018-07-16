@@ -19,6 +19,7 @@ require 'faker'
 require 'byebug'
 require 'helpers/shared'
 require 'helpers/minitest_trx'
+require 'helpers/assert_difference'
 require 'minitest/around/spec'
 
 FactoryGirl.find_definitions
