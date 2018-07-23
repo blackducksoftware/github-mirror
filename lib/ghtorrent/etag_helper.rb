@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require 'byebug'
 
 class GHTorrent::EtagHelper
@@ -17,7 +18,6 @@ class GHTorrent::EtagHelper
 
   def verify_etag_and_get_response(media_type)
     etag_data, etag_response = etag_data_and_response(media_type)
-byebug
     return unless etag_response
     log_etag_usage(etag_data) if etag_response.status[0] == '304'
     # Since the current api call is for first page, do not return etag response for backloaded api.
