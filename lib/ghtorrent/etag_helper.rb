@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-require 'byebug'
-
 class GHTorrent::EtagHelper
   def initialize(command, url)
     @ght = command.ght
