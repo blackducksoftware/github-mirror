@@ -2,6 +2,16 @@ require 'test_helper'
 
 class TestApiUser
   include GHTorrent::APIClient
+  
+  def ght
+    @ght ||= GHTorrent::Mirror.new(1)
+    @ght
+  end
+
+  def db
+    @db ||= ght.db
+    @db
+  end
 end
 
 describe 'ApiClient' do

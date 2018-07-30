@@ -3,8 +3,18 @@ require 'test_helper'
 class TestGHTorrentRetriever
   include GHTorrent::Retriever
 
+  def ght
+    @ght ||= GHTorrent::Mirror.new(1)
+    @ght
+  end
+  
+    def db
+      @db ||= ght.db
+      @db
+    end
+
   def persister
-    @persister ||= GHTorrent::Mirror.new(1).persister
+    @persister ||= ght.persister
   end
 
   def debug(_string); end
