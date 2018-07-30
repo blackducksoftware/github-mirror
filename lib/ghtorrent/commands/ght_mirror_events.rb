@@ -44,6 +44,10 @@ are also queued, to ensure no additional information is gone missing.
     @ght ||= TransactedGHTorrent.new(settings)
   end
 
+  def db
+    ght.db
+  end
+
   def store_count(events)
     stored = Array.new
     new = dupl = 0
