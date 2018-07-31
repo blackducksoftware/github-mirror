@@ -563,16 +563,12 @@ module GHTorrent
         warn "Could not find user #{user}"
         return
       end
-
-      currepo = repos.first(:owner_id => curuser[:id], :name => repo)
-
-      unless currepo.nil?
-        debug "Repo #{user}/#{repo} exists"
-        return currepo
-      end
-
-      r = retrieve_repo(user, repo, true)
-
+      
+      #          New functionality
+      # Always persist updated repositories.  
+      # etag functionality will be used to ensure we don't
+      # hit the repo api too often
+      r = persist_repo(user, repo)
       if r.nil?
         warn "Could not retrieve repo #{user}/#{repo}"
         return
@@ -583,6 +579,13 @@ module GHTorrent
         curuser = ensure_user(r['owner']['login'], false, false)
       end
 
+      currepo = repos.first(:owner_id => curuser[:id], :name => repo)
+
+      unless currepo.nil?
+        debug "Repo #{user}/#{repo} exists"
+        return currepo
+      end
+      
       repos.insert(:url => r['url'],
                    :owner_id => curuser[:id],
                    :name => r['name'],
