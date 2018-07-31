@@ -224,6 +224,7 @@ describe 'GhtCommit' do
                       parents: [] })
 
       ght.stubs(:retrieve_repo).returns(nil)
+      ght.stubs(:persist_repo).returns(repo)
 
       ght.stubs(:retrieve_commit).returns(commit)
       sha = commit.sha
@@ -273,6 +274,8 @@ describe 'GhtCommit' do
       commit['commit']['author'].date = commit.created_at
 
       ght.stubs(:retrieve_repo).returns(nil)
+      ght.stubs(:persist_repo).returns(repo)
+      
       retval = ght.store_commit(commit, repo.name, user.name_email)
 
       assert retval[:sha].must_equal commit.sha
