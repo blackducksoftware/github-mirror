@@ -223,11 +223,10 @@ module GHTorrent
     end
 
     def persist_repo(user,repo)
-      byebug
       repo = request_repo(user, repo)
       return unless repo and !repo.empty?
 
-      persister.upsert(:repos, {'name' => repo['name'], 'owner.login' => repo['owner']['login']}, repo)
+      persister.replace(:repos, {'name' => repo['name'], 'owner.login' => repo['owner']['login']}, repo)
       info "Added or updated repo #{user} -> #{repo}"
     end
 
