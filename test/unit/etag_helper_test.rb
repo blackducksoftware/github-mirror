@@ -2,12 +2,15 @@ require 'test_helper'
 
 class TestRetriever
   include GHTorrent::APIClient
-  attr_accessor :db
+  attr_accessor :ght, :db
 end
 
 EtagHelper = GHTorrent::EtagHelper
 
 describe 'EtagHelper' do
+  let(:command) { stub(ght: ght) }
+  before { EtagHelper.any_instance.unstub(:cacheable_endpoint?) }
+
   describe 'first_page' do
     it 'must be truthy for the first page' do
       ['url?per_page=2&page=',
@@ -16,11 +19,11 @@ describe 'EtagHelper' do
        'url?per_page=2&page=1&var=2',
        'url?page=&per_page=2',
        'url?page=1&per_page=2'].each do |url|
-        EtagHelper.new(nil, url).send(:first_page?).must_equal true
+        EtagHelper.new(command, url).send(:first_page?).must_equal true
       end
 
       ['url', 'url?per_page=1'].each do |url|
-        EtagHelper.new(nil, url).send(:first_page?).must_equal true
+        EtagHelper.new(command, url).send(:first_page?).must_equal true
       end
     end
 
@@ -29,7 +32,7 @@ describe 'EtagHelper' do
        'url?per_page=2&page=2',
        'url?per_page=2&page=21',
        'url?per_page=2&page=11&var=2'].each do |url|
-        EtagHelper.new(nil, url).send(:first_page?).must_equal false
+        EtagHelper.new(command, url).send(:first_page?).must_equal false
       end
     end
   end
@@ -38,13 +41,13 @@ describe 'EtagHelper' do
     it 'must be true for all repos/alphanum/alphanum/alphanum patterns except stargazers' do
       ["https://api.github.com/repos/foo/bar/#{Faker::Lorem.word}?x=y&z=o",
        'https://api.github.com/repos/foo/bar/comm1ts/'].each do |url|
-        EtagHelper.new(nil, url).send(:front_loaded?).must_equal true
+        EtagHelper.new(command, url).send(:front_loaded?).must_equal true
       end
 
       ['https://api.github.com/repos/foo/bar/stargazers?per_page=2&page=2',
        'https://api.github.com/repos/foo/bar/@commits',
        'https://api.github.com/repos/foo/bar/commits/eb6ba57'].each do |url|
-        EtagHelper.new(nil, url).send(:front_loaded?).wont_equal true
+        EtagHelper.new(command, url).send(:front_loaded?).wont_equal true
       end
     end
   end
@@ -56,6 +59,7 @@ describe 'EtagHelper' do
 
     before do
       retriever.db = db
+      retriever.ght = ght
       retriever.stubs(:auth_method).returns(:none)
     end
 
@@ -175,7 +179,7 @@ describe 'EtagHelper' do
                   https://api.github.com/legacy/user/email/foo
                   https://api.github.com/legacy/user/search/foo)
 
-        retriever.stubs(:do_request).returns(stub(meta: {}))
+        ght.stubs(:do_request).returns(stub(meta: {}))
 
         urls.each do |url|
           etag_helper = EtagHelper.new(retriever, url)
@@ -192,11 +196,11 @@ describe 'EtagHelper' do
       expected_base_url = 'https://api.github.com/repos/foo/bar/pulls?state=closed'
       url = expected_base_url + '&foobar=2'
 
-      etag_helper = EtagHelper.new(nil, url)
+      etag_helper = EtagHelper.new(command, url)
       etag_helper.send(:base_url).must_equal expected_base_url
 
       new_url = 'https://api.github.com/repos/foo/bar/pulls?foobar=n&state=closed'
-      etag_helper = EtagHelper.new(nil, new_url)
+      etag_helper = EtagHelper.new(command, new_url)
       etag_helper.send(:base_url).must_equal expected_base_url
     end
   end
