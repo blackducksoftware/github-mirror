@@ -55,7 +55,7 @@ module GHTorrent
         # :sql_url => 'postgres://ght_admin:oh-Postgres!8@ght-db01.eastus.cloudapp.azure.com:5432/ght_development',
 
         :mirror_urlbase => 'https://api.github.com/',
-        :mirror_persister => 'mongo',
+        :mirror_persister => 'noop',
         :mirror_history_pages_back => 10,
         :user_agent => 'ghtorrent',
         :store_pull_request_commits => 'false',
