@@ -2,6 +2,7 @@ require 'mongo'
 require 'ghtorrent/adapters/base_adapter'
 require 'ghtorrent/bson_orderedhash'
 
+require 'byebug'
 module GHTorrent
 
   # A persistence adapter that saves data into a configurable MongoDB database.
@@ -61,8 +62,8 @@ module GHTorrent
     end
 
     def replace(entity, query, new_entry, upsert = true)
-      super upsert(entity)
-      r = mongo[entity].replace_one(query, new_entry, upsert) 
+      check_entity_exists(entity)		
+      r = mongo[entity].replace_one(query, new_entry, {:upsert => upsert}) 
       r
     end
 

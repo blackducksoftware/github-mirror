@@ -5,6 +5,7 @@ require 'ghtorrent/api_client'
 require 'ghtorrent/settings'
 require 'ghtorrent/utils'
 require 'ghtorrent/logging'
+require 'byebug'
 
 module GHTorrent
   module Retriever
@@ -225,9 +226,9 @@ module GHTorrent
     def persist_repo(user,repo)
       repo = request_repo(user, repo)
       return unless repo and !repo.empty?
-
       persister.replace(:repos, {'name' => repo['name'], 'owner.login' => repo['owner']['login']}, repo)
       info "Added or updated repo #{user} -> #{repo}"
+      repo	
     end
 
     def retrieve_repo(user, repo, refresh = false)
