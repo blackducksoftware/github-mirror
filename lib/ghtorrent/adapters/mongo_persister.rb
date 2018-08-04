@@ -63,7 +63,7 @@ module GHTorrent
 
     def replace(entity, query, new_entry, upsert = true)
       check_entity_exists(entity)		
-      r = mongo[entity].replace_one(query, new_entry, {:upsert => upsert}) 
+      r = mongo[entity].update_one(query, new_entry, {:upsert => upsert}) 
       r
     end
 
