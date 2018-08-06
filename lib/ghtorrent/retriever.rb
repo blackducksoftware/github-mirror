@@ -5,7 +5,6 @@ require 'ghtorrent/api_client'
 require 'ghtorrent/settings'
 require 'ghtorrent/utils'
 require 'ghtorrent/logging'
-require 'byebug'
 
 module GHTorrent
   module Retriever

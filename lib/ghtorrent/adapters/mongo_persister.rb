@@ -2,7 +2,6 @@ require 'mongo'
 require 'ghtorrent/adapters/base_adapter'
 require 'ghtorrent/bson_orderedhash'
 
-require 'byebug'
 module GHTorrent
 
   # A persistence adapter that saves data into a configurable MongoDB database.
