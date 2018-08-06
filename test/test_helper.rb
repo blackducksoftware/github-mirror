@@ -19,7 +19,14 @@ require 'faker'
 require 'byebug'
 require 'helpers/shared'
 require 'helpers/minitest_trx'
+require 'helpers/assert_difference'
 require 'minitest/around/spec'
 
 FactoryGirl.find_definitions
 include FactoryGirl::Syntax::Methods
+
+class MiniTest::Spec
+  before do
+    GHTorrent::EtagHelper.any_instance.stubs(:cacheable_endpoint?)
+  end
+end

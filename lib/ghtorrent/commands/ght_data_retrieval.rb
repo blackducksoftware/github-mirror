@@ -39,6 +39,10 @@ If event_id is provided, only this event is processed.
     @gh
   end
 
+  def db
+    ght.db
+  end
+
   def logger
     ght.logger
   end

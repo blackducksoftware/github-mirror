@@ -7,6 +7,7 @@ require 'json'
 require 'ghtorrent/logging'
 require 'ghtorrent/settings'
 require 'ghtorrent/ghtime'
+require 'ghtorrent/etag_helper'
 require 'version'
 
 module GHTorrent
@@ -147,7 +148,7 @@ module GHTorrent
       begin
         start_time = Time.now
 
-        contents = do_request(url, media_type)
+        contents = GHTorrent::EtagHelper.new(self, url).request(media_type)
         total = Time.now.to_ms - start_time.to_ms
         info "Successful request. URL: #{url}, Remaining: #{@remaining}, Total: #{total} ms"
 
@@ -181,6 +182,9 @@ module GHTorrent
         warn error_msg(url, e)
         raise e
       ensure
+        @remaining  ||= 5000
+        @reset      ||= Time.now.to_i + 3600
+        @req_limit  ||= config(:req_limit)
         # The exact limit is only enforced upon the first @reset
         # No idea how many requests are available on this key. Sleep if we have run out
         if @remaining < @req_limit
@@ -205,7 +209,7 @@ module GHTorrent
       return :none
     end
 
-    def do_request(url, media_type)
+    def do_request(url, media_type, extra_headers = {})
       @attach_ip  ||= config(:attach_ip)
       @token      ||= config(:github_token)
       @user_agent ||= config(:user_agent)
@@ -215,16 +219,14 @@ module GHTorrent
       @req_limit  ||= config(:req_limit)
       media_type = 'application/json' unless media_type.size > 0
 
+      headers = { 'User-Agent' => @user_agent, 'Accept' => media_type }.merge(extra_headers)
       open_func ||=
           case @auth_type
             when :none
-              lambda {|url| open(url, 'User-Agent' => @user_agent,
-                                      'Accept' => media_type)}
+              lambda {|url| open(url, headers)}
             when :token
               # As per: https://developer.github.com/v3/auth/#via-oauth-tokens
-              lambda {|url| open(url, 'User-Agent' => @user_agent,
-                                      'Authorization' => "token #{@token}",
-                                      'Accept' => media_type)}
+              lambda {|url| open(url, headers.merge('Authorization' => "token #{@token}"))}
           end
 
       result = if @attach_ip.nil? or @attach_ip.eql? '0.0.0.0'
@@ -238,6 +240,7 @@ module GHTorrent
       @reset = result.meta['x-ratelimit-reset'].to_i
       result
     end
+    public :do_request
 
     # Attach to a specific IP address if the machine has multiple
     def attach_to(ip)

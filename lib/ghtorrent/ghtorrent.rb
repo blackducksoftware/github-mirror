@@ -32,6 +32,10 @@ module GHTorrent
       @persister.close unless @persister.nil?
     end
 
+    def ght
+      self
+    end
+
     # Get a connection to the database
     def db
       return @db unless @db.nil?
