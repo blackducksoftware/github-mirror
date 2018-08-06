@@ -52,6 +52,7 @@ module GHTorrent
 
         :sql_url => 'sqlite://github.db',
         # :sql_url => 'mysql2://ghtorrent:ghtorrent@localhost/ghtorrent',
+        # :sql_url => 'postgres://ght_admin:oh-Postgres!8@ght-db01.eastus.cloudapp.azure.com:5432/ght_development',
 
         :mirror_urlbase => 'https://api.github.com/',
         :mirror_persister => 'noop',
