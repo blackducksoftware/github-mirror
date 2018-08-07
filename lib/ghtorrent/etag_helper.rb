@@ -53,7 +53,7 @@ class GHTorrent::EtagHelper
 
   def store_etag_in_db(result)
     params = { base_url: base_url, page_no: current_page_no,
-               etag: result.meta['etag'] }
+               etag: result.meta['etag'], updated_at: Time.now }
 
     record = @ght.db[:etags].first(base_url: base_url)
     if record
@@ -104,6 +104,6 @@ class GHTorrent::EtagHelper
 
   def log_etag_usage(etag_data)
     @ght.db[:etags].where(base_url: etag_data[:base_url])
-                   .update(used_count: etag_data[:used_count] + 1)
+                   .update(used_count: etag_data[:used_count] + 1, updated_at: Time.now)
   end
 end

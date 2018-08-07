@@ -1,5 +1,4 @@
 require 'sequel'
-require 'ghtorrent/migrations/mysql_defaults'
 
 Sequel.migration do
   up do
@@ -9,6 +8,7 @@ Sequel.migration do
       String :etag, size: 40, null: false
       Integer :page_no, null: false, default: 1
       Integer :used_count, default: 0
+      DateTime :updated_at, null: false, default: Sequel::CURRENT_TIMESTAMP
     end
   end
 
