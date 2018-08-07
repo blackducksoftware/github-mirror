@@ -22,7 +22,7 @@ module GHTorrent
                           last = nil)
 
       url = ensure_max_per_page(url)
-      data = api_request_raw(url)
+      data = api_request_raw(url, paged: true)
 
       return [] if data.nil?
 
@@ -51,13 +51,13 @@ module GHTorrent
     # A normal request. Returns a hash or an array of hashes representing the
     # parsed JSON result. The media type
     def api_request(url, media_type = '')
-      parse_request_result api_request_raw(ensure_max_per_page(url), media_type)
+      parse_request_result api_request_raw(ensure_max_per_page(url), media_type: media_type)
     end
 
     # Determine the number of pages contained in a multi-page API response
     def num_pages(url)
       url = ensure_max_per_page(url)
-      data = api_request_raw(url)
+      data = api_request_raw(url, use_etag: false)
 
       if data.nil? or data.meta.nil? or data.meta['link'].nil?
         return 1
@@ -105,7 +105,7 @@ module GHTorrent
       if result.nil?
         []
       else
-        json = result.read
+        json = result.is_a?(String) ? result : result.read
 
         if json.nil?
           []
@@ -143,12 +143,11 @@ module GHTorrent
     end
 
     # Do the actual request and return the result object
-    def api_request_raw(url, media_type = '')
-
+    def api_request_raw(url, media_type: '', paged: false, use_etag: true)
       begin
         start_time = Time.now
 
-        contents = GHTorrent::EtagHelper.new(self, url).request(media_type)
+        contents = GHTorrent::EtagHelper.new(self, url, use_etag).request(media_type, paged)
         total = Time.now.to_ms - start_time.to_ms
         info "Successful request. URL: #{url}, Remaining: #{@remaining}, Total: #{total} ms"
 

@@ -93,7 +93,7 @@ describe 'ApiClient' do
     describe 'must ensure_max_per_page' do
       it 'must set per_page to 100 when page param is present' do
         url = config[:mirror_urlbase] + 'search/repositories?page=1'
-        api_client.expects(:api_request_raw).with(url + '&per_page=100')
+        api_client.expects(:api_request_raw).with(url + '&per_page=100', paged: true)
         api_client.paged_api_request(url)
       end
     end
