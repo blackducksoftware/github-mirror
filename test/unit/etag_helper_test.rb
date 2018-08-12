@@ -268,9 +268,24 @@ describe 'EtagHelper' do
       retriever = TestRetriever.new
       retriever.ght = ght
       etag_helper = EtagHelper.new(retriever, url)
-      expected_etag = { etag: EtagHelper::EMPTY_RESPONSE_ETAG, page_no: 1 }
+      expected_etag = { etag: EtagHelper::EMPTY_RESPONSE_ETAG, page_no: 1, updated_at: Date.today.prev_day }
       etag_helper.expects(:get_etag_response)
-      etag_helper.send(:etag_data_and_response, '').must_equal [expected_etag, nil]
+      response = etag_helper.send(:etag_data_and_response, '')
+      response.must_equal [expected_etag, nil]
+    end
+  end
+
+  describe 'etag_valid?' do
+    before { EtagHelper.any_instance.unstub(:etag_valid?) }
+    it 'must return a static empty etag object on first run for certain endpoints' do
+      url = 'https://api.github.com/repos/foo/bar/pulls'
+      retriever = TestRetriever.new
+      retriever.ght = ght
+      etag_helper = EtagHelper.new(retriever, url)
+      expected_etag = { etag: EtagHelper::EMPTY_RESPONSE_ETAG, page_no: 1, updated_at: Date.today.prev_day }
+      etag_helper.expects(:get_etag_response).never
+      response = etag_helper.send(:etag_data_and_response, '')
+      refute response
     end
   end
 end

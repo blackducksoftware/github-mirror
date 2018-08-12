@@ -1,6 +1,8 @@
 require_relative 'paged_etag_match_error'
 
 class GHTorrent::EtagHelper
+  include GHTorrent::Settings
+
   EMPTY_RESPONSE_ETAG = '5277b56db38c54d55de2903f41c9f6d6'
 
   def initialize(command, url, use_etag = true)
@@ -22,7 +24,7 @@ class GHTorrent::EtagHelper
 
   def verify_etag_and_get_response(media_type, paged)
     etag_data, etag_response = etag_data_and_response(media_type)
-    return unless etag_response
+    return unless etag_response 
     log_etag_usage_and_raise_error(etag_data) if paged && not_modified?(etag_response)
     # For single response & frontloaded api, this value will be 1.
     # For modified backloaded api, this last page response is not useful.
@@ -43,14 +45,14 @@ class GHTorrent::EtagHelper
 
   def etag_data_and_response(media_type)
     etag_data = @ght.db[:etags].first(base_url: base_url) || empty_etag
-    return unless etag_data
+    return unless etag_data && etag_valid?(etag_data)
     etag_response = get_etag_response(etag_data, media_type)
     [etag_data, etag_response]
   end
 
   def empty_etag
     return unless base_url =~ %r{/(?:stargazers|forks|pulls|issues)(?:\?state.+)?$}
-    { etag: EMPTY_RESPONSE_ETAG, page_no: 1 }
+    { etag: EMPTY_RESPONSE_ETAG, page_no: 1, updated_at: Date.today.prev_day }
   end
 
   def not_modified?(response)
@@ -144,5 +146,10 @@ class GHTorrent::EtagHelper
       appender = @url =~ /\?/ ? '&' : '?'
       @url + "#{appender}page=#{page_no}"
     end
+  end
+
+  def etag_valid?(etag_data)
+    hours = config(:etag_refresh_hours)
+    etag_data[:updated_at] > (DateTime.now - hours/24.0)
   end
 end

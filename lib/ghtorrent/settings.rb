@@ -25,7 +25,7 @@ module GHTorrent
         :store_pull_request_commits => 'mirror.store_pull_request_commits',
 
         :github_token => 'mirror.token',
-
+        :etag_refresh_hours => 'mirror.etag_refresh_hours',
         :attach_ip => 'mirror.attach_ip',
 
         :rescue_loops => 'mirror.rescue_loops',
@@ -61,6 +61,7 @@ module GHTorrent
         :store_pull_request_commits => 'false',
 
         :github_token => 'place your github token here',
+        :etag_refresh_hours => 12,
 
         :attach_ip => '0.0.0.0',
 
