@@ -226,7 +226,7 @@ module GHTorrent
       repo = request_repo(user, repo)
       return unless repo and !repo.empty?
       persister.replace(:repos, {'name' => repo['name'], 'owner.login' => repo['owner']['login']}, repo)
-      info "Added or updated repo #{user} -> #{repo}"
+      info "Added or updated repo #{user} -> #{repo['name']}"
       repo	
     end
 

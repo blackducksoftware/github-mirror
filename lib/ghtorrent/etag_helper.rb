@@ -1,5 +1,5 @@
 require_relative 'paged_etag_match_error'
-
+require 'byebug'
 class GHTorrent::EtagHelper
   include GHTorrent::Settings
 
@@ -149,7 +149,7 @@ class GHTorrent::EtagHelper
   end
 
   def etag_valid?(etag_data)
-    hours = config(:etag_refresh_hours)
-    etag_data[:updated_at] > (DateTime.now - hours/24.0)
+    @hours ||= config(:etag_refresh_hours)
+    etag_data[:updated_at].to_datetime > (DateTime.now - @hours/24.0)
   end
 end
