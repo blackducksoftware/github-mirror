@@ -1,5 +1,4 @@
 require_relative 'paged_etag_match_error'
-require 'byebug'
 class GHTorrent::EtagHelper
   include GHTorrent::Settings
 
@@ -24,7 +23,7 @@ class GHTorrent::EtagHelper
 
   def verify_etag_and_get_response(media_type, paged)
     etag_data, etag_response = etag_data_and_response(media_type)
-    return unless etag_response 
+    return unless etag_response
     log_etag_usage_and_raise_error(etag_data) if paged && not_modified?(etag_response)
     # For single response & frontloaded api, this value will be 1.
     # For modified backloaded api, this last page response is not useful.
