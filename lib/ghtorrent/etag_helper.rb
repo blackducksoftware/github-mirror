@@ -44,7 +44,7 @@ class GHTorrent::EtagHelper
 
   def etag_data_and_response(media_type)
     etag_data = @ght.db[:etags].first(base_url: base_url) || empty_etag
-    return unless etag_data && etag_valid?(etag_data)
+    return unless etag_data && etag_recently_checked?(etag_data)
     etag_response = get_etag_response(etag_data, media_type)
     [etag_data, etag_response]
   end
@@ -147,7 +147,7 @@ class GHTorrent::EtagHelper
     end
   end
 
-  def etag_valid?(etag_data)
+  def etag_recently_checked?(etag_data)
     @hours ||= config(:etag_refresh_hours)
     etag_data[:updated_at].to_datetime > (DateTime.now - @hours/24.0)
   end

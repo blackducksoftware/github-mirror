@@ -275,14 +275,14 @@ describe 'EtagHelper' do
     end
   end
 
-  describe 'etag_valid?' do
-    before { EtagHelper.any_instance.unstub(:etag_valid?) }
-    it 'must return a static empty etag object on first run for certain endpoints' do
+  describe 'etag_recently_checked?' do
+    before { EtagHelper.any_instance.unstub(:etag_recently_checked?) }
+    it 'must return an empty response when etag has been recently checked' do
       url = 'https://api.github.com/repos/foo/bar/pulls'
       retriever = TestRetriever.new
       retriever.ght = ght
       etag_helper = EtagHelper.new(retriever, url)
-      expected_etag = { etag: EtagHelper::EMPTY_RESPONSE_ETAG, page_no: 1, updated_at: Date.today.prev_day }
+      expected_etag = { etag: EtagHelper::EMPTY_RESPONSE_ETAG, page_no: 1, updated_at: DateTime.now}
       etag_helper.expects(:get_etag_response).never
       response = etag_helper.send(:etag_data_and_response, '')
       refute response

@@ -28,6 +28,6 @@ include FactoryGirl::Syntax::Methods
 class MiniTest::Spec
   before do
     GHTorrent::EtagHelper.any_instance.stubs(:cacheable_endpoint?)
-    GHTorrent::EtagHelper.any_instance.stubs(:etag_valid?).returns true
+    GHTorrent::EtagHelper.any_instance.stubs(:etag_recently_checked?).returns true
   end
 end
